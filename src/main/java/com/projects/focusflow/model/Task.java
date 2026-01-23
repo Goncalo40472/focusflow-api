@@ -1,9 +1,14 @@
 package com.projects.focusflow.model;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class Task {
 
     private Long id;
+
+    @NotBlank(message = "Title is mandatory")
     private String title;
+
     private boolean completed;
 
     public Task() {}
