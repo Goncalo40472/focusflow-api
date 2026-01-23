@@ -1,5 +1,6 @@
 package com.projects.focusflow.service;
 
+import com.projects.focusflow.exception.TaskNotFoundException;
 import com.projects.focusflow.model.Task;
 import org.springframework.stereotype.Service;
 
@@ -30,11 +31,15 @@ public class TaskService {
                 return task;
             }
         }
-        return null;
+        throw new TaskNotFoundException(id);
     }
 
-    public boolean deleteTask(Long id) {
-        return tasks.removeIf(task -> task.getId().equals(id));
-    }
+    public void deleteTask(Long id) {
 
+        boolean removed = tasks.removeIf(task -> task.getId().equals(id));
+
+        if (!removed) {
+            throw new TaskNotFoundException(id);
+        }
+    }
 }

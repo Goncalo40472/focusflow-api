@@ -29,24 +29,12 @@ public class TaskController {
 
     @PutMapping("/{id}")
     public Task updateTask(@PathVariable Long id, @Valid @RequestBody Task task) {
-
-        Task updatedTask = taskService.updateTask(id, task);
-
-        if(updatedTask == null){
-            throw new RuntimeException("Task not found");
-        }
-
-        return updatedTask;
+        return taskService.updateTask(id, task);
     }
 
     @DeleteMapping("/{id}")
     public void deleteTask(@PathVariable Long id) {
-
-        boolean deleted = taskService.deleteTask(id);
-
-        if(!deleted){
-            throw new RuntimeException("Task not found");
-        }
+        taskService.deleteTask(id);
     }
 
 }
