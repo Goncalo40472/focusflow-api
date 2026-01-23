@@ -5,7 +5,6 @@ import com.projects.focusflow.service.TaskService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -26,6 +25,28 @@ public class TaskController {
     @PostMapping
     public Task createTask(@Valid @RequestBody Task task) {
         return taskService.createTask(task);
+    }
+
+    @PutMapping("/{id}")
+    public Task updateTask(@PathVariable Long id, @Valid @RequestBody Task task) {
+
+        Task updatedTask = taskService.updateTask(id, task);
+
+        if(updatedTask == null){
+            throw new RuntimeException("Task not found");
+        }
+
+        return updatedTask;
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteTask(@PathVariable Long id) {
+
+        boolean deleted = taskService.deleteTask(id);
+
+        if(!deleted){
+            throw new RuntimeException("Task not found");
+        }
     }
 
 }

@@ -22,4 +22,19 @@ public class TaskService {
         return task;
     }
 
+    public Task updateTask(Long id, Task updatedTask) {
+        for (Task task : tasks) {
+            if (task.getId().equals(id)) {
+                task.setTitle(updatedTask.getTitle());
+                task.setCompleted(updatedTask.isCompleted());
+                return task;
+            }
+        }
+        return null;
+    }
+
+    public boolean deleteTask(Long id) {
+        return tasks.removeIf(task -> task.getId().equals(id));
+    }
+
 }
