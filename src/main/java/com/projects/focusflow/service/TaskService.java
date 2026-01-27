@@ -2,6 +2,7 @@ package com.projects.focusflow.service;
 
 import com.projects.focusflow.exception.TaskNotFoundException;
 import com.projects.focusflow.model.Task;
+import com.projects.focusflow.repository.TaskRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -10,36 +11,35 @@ import java.util.List;
 @Service
 public class TaskService {
 
-    private List<Task> tasks = new ArrayList<Task>();
-    private Long nextId = 1L;
+    private final TaskRepository taskRepository;
+
+    public TaskService(TaskRepository taskRepository) {
+        this.taskRepository = taskRepository;
+    }
 
     public List<Task> getAllTasks() {
-        return tasks;
+        return taskRepository.findAll();
     }
 
     public Task createTask(Task task) {
-        task.setId(nextId++);
-        tasks.add(task);
-        return task;
+        return taskRepository.save(task);
     }
 
     public Task updateTask(Long id, Task updatedTask) {
-        for (Task task : tasks) {
-            if (task.getId().equals(id)) {
-                task.setTitle(updatedTask.getTitle());
-                task.setCompleted(updatedTask.isCompleted());
-                return task;
-            }
-        }
-        throw new TaskNotFoundException(id);
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new TaskNotFoundException(id));
+
+        task.setTitle(updatedTask.getTitle());
+        task.setCompleted(updatedTask.isCompleted());
+
+        return taskRepository.save(task);
     }
 
     public void deleteTask(Long id) {
-
-        boolean removed = tasks.removeIf(task -> task.getId().equals(id));
-
-        if (!removed) {
+        if(!taskRepository.existsById(id)) {
             throw new TaskNotFoundException(id);
         }
+
+        taskRepository.deleteById(id);
     }
 }
